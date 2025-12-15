@@ -3,7 +3,13 @@ import About from "../models/About.js";
 // Add About
 export const addAbout = async (req, res) => {
   try {
-    const about = new About(req.body);
+    const about = new About({
+      title: req.body.title,
+      subtitle: req.body.subtitle,
+      description: req.body.description,
+      image: req.file ? req.file.filename : null,
+    });
+
     await about.save();
     res.json({ success: true, about });
   } catch (error) {
@@ -11,11 +17,19 @@ export const addAbout = async (req, res) => {
   }
 };
 
-// Get All Abouts
+// Get All (send full image URL)
 export const getAbout = async (req, res) => {
   try {
     const data = await About.find();
-    res.json({ success: true, about: data });
+
+    res.json({
+      success: true,
+      about: data.map((a) => ({
+        ...a._doc,
+        image: a.image ? `/uploads/${a.image}` : null,
+      })),
+    });
+
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

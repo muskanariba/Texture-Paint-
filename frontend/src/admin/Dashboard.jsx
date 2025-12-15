@@ -62,9 +62,9 @@ export default function Dashboard() {
       
     },
     {
-      title: "Products",
-      description: "Create, edit and manage all your paint products.",
-      path: "/admin/products",
+      title: "Collections",
+      description: "Create, edit and manage all your collection.",
+      path: "/admin/collection",
       icon: CubeIcon,
       color: "border-t-red-500",
       hover: "hover:bg-red-50",

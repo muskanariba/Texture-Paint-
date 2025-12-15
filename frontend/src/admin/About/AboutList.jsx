@@ -31,14 +31,12 @@ export default function AboutList() {
     <AdminLayout>
       <div className="p-6">
 
-        {/* ⭐ Dashboard Heading ⭐ */}
+        {/* Top Heading */}
         <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-black">About Section</h1>
-              <p className="text-gray-800 mt-2">
-                Manage About page content from here.
-              </p>
+              <p className="text-gray-800 mt-2">Manage About page content.</p>
             </div>
 
             <Link
@@ -50,11 +48,12 @@ export default function AboutList() {
           </div>
         </div>
 
-        {/* ⭐ Table ⭐ */}
+        {/* Table */}
         <div className="overflow-x-auto bg-white border rounded-xl shadow">
           <table className="w-full">
             <thead>
               <tr className="bg-gray-100 text-left">
+                <th className="p-3 border">Image</th>
                 <th className="p-3 border">Title</th>
                 <th className="p-3 border">Subtitle</th>
                 <th className="p-3 border">Description</th>
@@ -65,22 +64,33 @@ export default function AboutList() {
             <tbody>
               {aboutData.map((a) => (
                 <tr key={a._id} className="hover:bg-gray-50 transition">
-                  
-                  <td className="p-3 border font-medium">{a.title}</td>
 
-                  <td className="p-3 border text-gray-700">
-                    {a.subtitle ? a.subtitle : "—"}
+                  <td className="p-3 border">
+                    {a.image ? (
+                     <img
+  src={`${API_URL.replace("/api", "")}/uploads/${a.image}`}
+  alt="About"
+  className="w-20 h-20 object-cover rounded"
+/>
+
+                    ) : (
+                      "—"
+                    )}
                   </td>
 
-                  <td className="p-3 border text-gray-700">
-                    {a.description.length > 90
-                      ? a.description.substring(0, 90) + "..."
+                  <td className="p-3 border font-medium">{a.title}</td>
+
+                  <td className="p-3 border">{a.subtitle || "—"}</td>
+
+                  <td className="p-3 border">
+                    {a.description.length > 80
+                      ? a.description.substring(0, 80) + "..."
                       : a.description}
                   </td>
 
                   <td className="p-3 border">
                     <div className="flex gap-2">
-                      
+
                       <Link
                         to={`/admin/about/edit/${a._id}`}
                         className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition"
@@ -97,12 +107,13 @@ export default function AboutList() {
 
                     </div>
                   </td>
+
                 </tr>
               ))}
 
               {aboutData.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="text-center p-5 text-gray-600">
+                  <td colSpan="5" className="text-center p-5 text-gray-600">
                     No About content found.
                   </td>
                 </tr>

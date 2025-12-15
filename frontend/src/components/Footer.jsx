@@ -1,55 +1,101 @@
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaWhatsapp } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaWhatsapp
+} from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-gray-50 pt-10 pb-6 relative overflow-hidden">
+    <footer className="relative w-full overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-100">
 
-      {/* Top Gradient Line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600"></div>
+      {/* Decorative Gradients (smaller) */}
+      <div className="absolute -top-16 -left-16 w-72 h-72 bg-yellow-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
 
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8">
+      {/* Top Accent Line */}
+      <div className="w-full h-[3px] bg-gradient-to-r from-yellow-400 via-red-500 to-purple-600"></div>
 
-        {/* Left Column – Brand + Description */}
-        <div className="flex flex-col gap-3">
-          <h2 className="text-2xl font-bold text-gray-900">
-            <span className="text-yellow-500">Premium</span> Paints
+      {/* Main Content */}
+      <div className="relative max-w-7xl mx-auto px-10 md:px-14 py-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+
+        {/* LEFT — BRAND STORY */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-3xl font-extrabold tracking-tight text-gray-900">
+            Premium{" "}
+            <span className="text-black">Texture</span>{" "}
+            <span className="text-black">Paint</span>
           </h2>
-          <p className="text-gray-700 text-sm leading-relaxed max-w-md">
-            Transforming walls with 
-            <span className="text-blue-600 font-semibold"> premium colors</span>, 
-            <span className="text-red-500 font-semibold"> quality coatings</span>, and 
-            <span className="text-purple-600 font-semibold"> artistic finishes</span>.
+
+          <p className="text-gray-700 text-base leading-relaxed max-w-lg">
+            We don’t just paint walls — we craft
+            <span className="text-blue-600 font-semibold"> premium experiences</span>{" "}
+            through
+            <span className="text-red-500 font-semibold"> quality coatings</span>{" "}
+            and
+            <span className="text-purple-600 font-semibold"> artistic textures</span>.
           </p>
 
-          {/* Social Media */}
-          <div className="flex gap-4 mt-4 text-gray-700">
-            <a href="#" className="hover:text-blue-600 transition"><FaFacebookF /></a>
-            <a href="#" className="hover:text-pink-500 transition"><FaInstagram /></a>
-            <a href="#" className="hover:text-blue-500 transition"><FaLinkedinIn /></a>
-            <a href="#" className="hover:text-blue-400 transition"><FaTwitter /></a>
-            <a href="https://wa.me/923200000000" target="_blank" className="hover:text-green-600 transition"><FaWhatsapp /></a>
+          {/* Social Icons (slightly smaller) */}
+          <div className="flex gap-4 mt-1">
+            {[FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp].map(
+              (Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-9 h-9 flex items-center justify-center rounded-full
+                             bg-white/80 backdrop-blur shadow-md text-gray-700
+                             hover:scale-110 transition"
+                >
+                  <Icon />
+                </a>
+              )
+            )}
           </div>
         </div>
 
-        {/* Right Column – Contact */}
-        <div className="flex flex-col items-start md:items-end gap-2">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">Contact Us</h3>
-          <p className="text-gray-700 text-sm">📩 Email: paintco.support@gmail.com</p>
-          <p className="text-gray-700 text-sm mt-0.5">📞 Phone: +92 320 0000000</p>
-          <p className="text-gray-700 text-sm mt-0.5">📍 Address: Lahore, Pakistan</p>
-          <p className="text-gray-700 text-sm mt-0.5">
-            💬 WhatsApp: <a href="https://wa.me/923200000000" target="_blank" className="text-green-600 underline">Chat Now</a>
-          </p>
+        {/* RIGHT — CONTACT CARD (compact) */}
+        <div className="flex md:justify-end">
+          <div className="relative bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg px-6 py-5 w-full max-w-md">
+
+            {/* Accent */}
+            <div className="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400/20 rounded-full blur-xl"></div>
+
+            <h3 className="text-lg font-bold text-gray-900 mb-3">
+              Get in Touch
+            </h3>
+
+            <div className="space-y-2 text-gray-700 text-sm">
+              <p> premiumlooktextureofficial@gmail.com</p>
+              <p> +92 327 2054430</p>
+              <p>
+                 WhatsApp:
+                <a
+                  href="https://wa.me/923272054430"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-green-600 font-semibold ml-1 hover:underline"
+                >
+                  Chat Now
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
       </div>
 
-      {/* Bottom Line */}
-      <div className="text-center mt-10 pt-4 border-t border-gray-300">
-        <p className="text-gray-700 text-sm">
-          © 2025 <span className="text-yellow-500 font-semibold">Premium Paints</span>. All rights reserved.
+      {/* Bottom Bar (slimmer) */}
+      <div className="border-t border-gray-300 py-3 text-center">
+        <p className="text-gray-600 text-xs tracking-wide">
+          © 2025{" "}
+          <span className="text-yellow-500 font-semibold">
+            Premium Texture Paint
+          </span>
+          . All rights reserved.
         </p>
       </div>
+
     </footer>
   );
 }

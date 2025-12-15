@@ -3,92 +3,173 @@ import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 
 export default function EditHero() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const { id } = useParams();
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [backgroundImage, setBackgroundImage] = useState("");
+  const [form, setForm] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    bgImage: "",
 
-  const loadHero = async () => {
-    const res = await fetch(`${API_URL}/hero/${id}`);
+    primaryBtnText: "",
+    primaryBtnLink: "",
+
+    secondaryBtnText: "",
+    secondaryBtnLink: "",
+  });
+
+  const [newImage, setNewImage] = useState(null);
+
+  // 🔹 Load hero data (same pattern as EditAbout)
+  const load = async () => {
+    const res = await fetch(`${API_URL}/hero/all`);
     const data = await res.json();
-    if (data.success) {
-      setTitle(data.hero.title);
-      setSubtitle(data.hero.subtitle);
-      setBackgroundImage(data.hero.backgroundImage);
-    }
+    const item = data.hero.find((x) => x._id === id);
+    if (item) setForm(item);
   };
 
-  const updateHandler = async (e) => {
+  useEffect(() => {
+    load();
+  }, []);
+
+  const handle = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const update = async (e) => {
     e.preventDefault();
+
+    const fd = new FormData();
+    fd.append("title", form.title);
+    fd.append("subtitle", form.subtitle);
+    fd.append("description", form.description);
+
+    fd.append("primaryBtnText", form.primaryBtnText);
+    fd.append("primaryBtnLink", form.primaryBtnLink);
+    fd.append("secondaryBtnText", form.secondaryBtnText);
+    fd.append("secondaryBtnLink", form.secondaryBtnLink);
+
+    // new image only if selected
+    if (newImage) {
+      fd.append("bgImage", newImage);
+    }
 
     const res = await fetch(`${API_URL}/hero/update/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, subtitle, backgroundImage }),
+      body: fd,
     });
 
     const data = await res.json();
     if (data.success) {
-      alert("Hero updated successfully!");
+      alert("Hero Updated Successfully");
       navigate("/admin/hero");
     }
   };
 
-  useEffect(() => {
-    loadHero();
-  }, []);
-
   return (
     <AdminLayout>
-      <div className="p-6 max-w-3xl mx-auto">
+      <div className="p-6 bg-white rounded-xl border shadow max-w-3xl mx-auto">
 
-        <h1 className="text-3xl font-bold mb-6">Edit Hero Section</h1>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">
+          Edit Hero Section
+        </h1>
 
-        <form
-          onSubmit={updateHandler}
-          className="bg-white p-6 rounded-xl shadow border"
-        >
-          <label className="block mb-4">
-            <span className="font-medium">Title</span>
+        <form className="space-y-5" onSubmit={update}>
+
+          {/* Title */}
+          <div>
+            <label className="block font-medium mb-1">Title</label>
             <input
-              type="text"
-              className="border p-2 rounded w-full mt-1"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              className="border p-3 w-full rounded"
+              value={form.title}
+              onChange={handle}
               required
             />
-          </label>
+          </div>
 
-          <label className="block mb-4">
-            <span className="font-medium">Subtitle</span>
+       
+
+          {/* Description */}
+          <div>
+            <label className="block font-medium mb-1">Description</label>
             <textarea
-              className="border p-2 rounded w-full mt-1"
-              rows="3"
-              value={subtitle}
-              onChange={(e) => setSubtitle(e.target.value)}
-              required
+              name="description"
+              rows="4"
+              className="border p-3 w-full rounded"
+              value={form.description}
+              onChange={handle}
             />
-          </label>
+          </div>
 
-          <label className="block mb-4">
-            <span className="font-medium">Background Image URL</span>
+          {/* Current Background Image */}
+          <div>
+            <label className="block font-medium mb-1">Current Background Image</label>
+            {form.bgImage ? (
+              <img
+                src={`${API_URL.replace("/api","")}/uploads/${form.bgImage}`}
+                className="w-full h-40 object-cover rounded border mb-2"
+                alt="Hero BG"
+              />
+            ) : (
+              <p>No image uploaded</p>
+            )}
+          </div>
+
+          {/* Upload New Image */}
+          <div>
+            <label className="block font-medium mb-1">Upload New Background Image</label>
             <input
-              type="text"
-              className="border p-2 rounded w-full mt-1"
-              value={backgroundImage}
-              onChange={(e) => setBackgroundImage(e.target.value)}
-              required
+              type="file"
+              accept="image/*"
+              className="border p-3 w-full rounded"
+              onChange={(e) => setNewImage(e.target.files[0])}
             />
-          </label>
+            <p className="text-sm text-gray-600 mt-1">
+              Leave empty to keep current image.
+            </p>
+          </div>
 
-          <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded mt-4">
+          {/* Buttons */}
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              name="primaryBtnText"
+              placeholder="Primary Button Text"
+              className="border p-3 rounded"
+              value={form.primaryBtnText}
+              onChange={handle}
+            />
+            <input
+              name="primaryBtnLink"
+              placeholder="Primary Button Link"
+              className="border p-3 rounded"
+              value={form.primaryBtnLink}
+              onChange={handle}
+            />
+
+            <input
+              name="secondaryBtnText"
+              placeholder="Secondary Button Text"
+              className="border p-3 rounded"
+              value={form.secondaryBtnText}
+              onChange={handle}
+            />
+            <input
+              name="secondaryBtnLink"
+              placeholder="Secondary Button Link"
+              className="border p-3 rounded"
+              value={form.secondaryBtnLink}
+              onChange={handle}
+            />
+          </div>
+
+          {/* Submit */}
+          <button className="bg-green-600 text-white px-6 py-3 rounded-lg w-full hover:bg-green-700 transition">
             Update Hero
           </button>
-        </form>
 
+        </form>
       </div>
     </AdminLayout>
   );

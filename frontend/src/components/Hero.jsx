@@ -1,62 +1,75 @@
+import { useEffect, useState } from "react";
+
 export default function Hero() {
+  const API_URL = import.meta.env.VITE_API_URL;
+  const [hero, setHero] = useState(null);
+
+  useEffect(() => {
+    const loadHero = async () => {
+      const res = await fetch(`${API_URL}/hero/all`);
+      const data = await res.json();
+      if (data.success && data.hero.length > 0) {
+        setHero(data.hero[0]);
+      }
+    };
+    loadHero();
+  }, []);
+
+  if (!hero) return null;
+
   return (
-    <section className="relative w-full h-screen flex items-center justify-center">
-      {/* Background GIF */}
+    <section
+      className="relative w-full h-screen overflow-hidden"
+    >
+      {/* 🔹 Background Image – FULL WIDTH + HEIGHT */}
       <img
-        src="https://cdn.apartmenttherapy.info/image/upload/v1558948665/at/archive/a024e5758b2387fec29d80f4e21766294ebb08d8.gif"
-        alt="Background"
-        className="absolute w-full h-full object-cover"
+        src={`${API_URL.replace("/api", "")}/uploads/${hero.bgImage}`}
+        alt="Hero Background"
+        className="absolute inset-0 w-full h-full object-cover object-center"
       />
 
-      {/* Overlay Content with semi-transparent dark background */}
-      <div className="relative z-10 text-center px-4 bg-black/40 py-10 rounded-lg">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6">
-          Bring Your Walls to Life
-        </h1>
-        <p className="text-lg md:text-xl text-gray-100 mb-8">
-          Premium-quality paints designed for durability, smooth finish, and long-lasting shine.
-        </p>
-        <div className="flex justify-center gap-4 flex-wrap">
-          <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300">
-            Get a Free Quote
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300">
-            Explore Colors
-          </button>
+      {/* 🔹 Light overlay */}
+      <div className="absolute inset-0 bg-black/20"></div>
+
+      {/* 🔹 Content Wrapper (navbar space included) */}
+      <div className="relative z-10 h-full flex items-center justify-center pt-24 px-6">
+        <div className="w-full max-w-3xl">
+          <div className="bg-gray-500/70 mt-20 backdrop-blur-md rounded-xl px-6 py-8 text-center shadow-md">
+
+            {/* Title */}
+            <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+              {hero.title}
+            </h1>
+
+            {/* Description */}
+            <p className="text-gray-100 text-sm md:text-base max-w-2xl mx-auto mb-5">
+              {hero.description}
+            </p>
+
+            {/* Buttons */}
+            <div className="flex justify-center gap-3 flex-wrap">
+              {hero.primaryBtnText && (
+                <a
+                  href={hero.primaryBtnLink}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-black px-5 py-2.5 rounded-md font-medium transition"
+                >
+                  {hero.primaryBtnText}
+                </a>
+              )}
+
+              {hero.secondaryBtnText && (
+                <a
+                  href={hero.secondaryBtnLink}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-md font-medium transition"
+                >
+                  {hero.secondaryBtnText}
+                </a>
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
   );
 }
-
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-
-// export default function Hero() {
-//   const [hero, setHero] = useState(null);
-
-//   useEffect(() => {
-//     axios.get("/api/heroes").then((res) => setHero(res.data[0]));
-//   }, []);
-
-//   if (!hero) return null;
-
-//   return (
-//     <section className="relative w-full h-screen flex items-center justify-center">
-//       <img
-//         src={hero.backgroundImage}
-//         className="absolute w-full h-full object-cover"
-//       />
-
-//       <div className="relative z-10 text-center bg-black/40 p-10 rounded-lg">
-//         <h1 className="text-5xl text-white font-bold">{hero.title}</h1>
-//         <p className="text-gray-200 mt-4">{hero.subtitle}</p>
-
-//         <div className="flex justify-center gap-4 mt-6">
-//           <button className="btn-yellow">{hero.button1Text}</button>
-//           <button className="btn-blue">{hero.button2Text}</button>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }

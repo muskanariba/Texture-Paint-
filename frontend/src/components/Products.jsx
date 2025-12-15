@@ -57,9 +57,9 @@ export default function Products() {
         <h2 className="md:text-4xl font-extrabold text-center text-white">
          <span className="text-black" >  Explore Our</span>
          <br />
-          <span className="text-red-400">Collection</span> 
+          <span className="text-red-500">Collection</span> 
             <span className="text-black" > & </span>
-           <span className="text-blue-400">Solutions</span>
+           <span className="text-blue-500">Solutions</span>
         </h2>
 
         {/* Overlay below heading */}
@@ -101,36 +101,3 @@ export default function Products() {
 }
 
 
-// import { useEffect, useState } from "react";
-
-// export default function Products() {
-//   const [products, setProducts] = useState([]);
-//   const API_URL = import.meta.env.VITE_API_URL;
-
-//   useEffect(() => {
-//     fetch(`${API_URL}/products`)
-//       .then((res) => res.json())
-//       .then((data) => data.success && setProducts(data.products));
-//   }, []);
-
-//   return (
-//     <div className="p-6">
-//       <h1 className="text-xl font-bold mb-4">Our Products</h1>
-
-//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//         {products.map((p) => (
-//           <div key={p._id} className="bg-white p-4 shadow rounded">
-//             <img
-//               src={`${API_URL}/uploads/${p.image}`}
-//               className="h-40 w-full object-cover rounded"
-//             />
-
-//             <h3 className="text-lg font-bold mt-3">{p.name}</h3>
-//             <p className="text-gray-500">${p.price}</p>
-//             <p className="text-sm text-gray-600">{p.description}</p>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }

@@ -1,10 +1,13 @@
 import multer from "multer";
 import path from "path";
 
+// Absolute uploads path (IMPORTANT)
+const uploadPath = path.join(process.cwd(), "uploads");
+
 // Storage
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // folder where images will be stored
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
     const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -18,6 +21,9 @@ const fileFilter = (req, file, cb) => {
   else cb(new Error("Only images allowed"), false);
 };
 
-const upload = multer({ storage, fileFilter });
+const upload = multer({
+  storage,
+  fileFilter,
+});
 
 export default upload;

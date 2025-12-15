@@ -31,38 +31,67 @@ const reasons = [
 
 export default function WhyChooseUs() {
   return (
-    <section>
-      <section id="why" className="w-full bg-gray-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-12 text-gray-800 leading-tight">
-            Why <span className="text-yellow-500">Choose Us</span>
-          </h2>
+    <section id="why" className="w-full bg-gray-50 py-20 relative overflow-hidden">
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {reasons.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                whileHover={{ scale: 1.05 }}
-                className="bg-white rounded-2xl shadow-md p-6 cursor-pointer border-t-4 border-transparent hover:border-yellow-400 hover:shadow-2xl transition-all duration-300 flex flex-col items-center"
+      {/* Soft Background Glow (No theme change) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-yellow-100/30 via-white to-blue-100/20 blur-3xl opacity-60 pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+        
+
+
+
+
+<h2 className="md:text-4xl font-extrabold text-center text-gray-800 mb-14">
+  <span className="text-red-500">The</span> Reason{" "}
+  <span className="text-yellow-500">Customers</span> <br />
+  Choose <span className="text-blue-500">Us</span>
+</h2>
+
+
+
+
+
+
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          {reasons.map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              whileHover={{
+                scale: 1.07,
+                translateY: -6,
+                boxShadow: "0 20px 40px rgba(0,0,0,0.15)",
+              }}
+              className="bg-white rounded-2xl p-7 cursor-pointer border border-gray-200 shadow-lg hover:shadow-2xl transition-all duration-500 flex flex-col items-center backdrop-blur-md"
+            >
+              {/* Icon */}
+              <div
+                className={`flex items-center justify-center w-20 h-20 mb-5 rounded-2xl ${item.color} shadow-xl`}
               >
-                {/* Icon */}
-                <div
-                  className={`flex items-center justify-center w-16 h-16 mb-4 rounded-full ${item.color} shadow-lg`}
-                >
-                  {item.icon}
-                </div>
+                {item.icon}
+              </div>
 
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{item.title}</h3>
-                <p className="text-gray-600 text-sm text-center">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
+              {/* Title */}
+              <h3 className="text-xl font-extrabold mb-3 text-gray-900 tracking-wide">
+                {item.title}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-600 text-sm leading-relaxed text-center">
+                {item.description}
+              </p>
+
+              {/* subtle glow effect */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/10 to-transparent opacity-0 hover:opacity-100 transition duration-500 pointer-events-none"></div>
+            </motion.div>
+          ))}
         </div>
-      </section>
+      </div>
     </section>
   );
 }

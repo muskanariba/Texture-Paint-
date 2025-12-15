@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 
-const projectSchema = new mongoose.Schema({
-  title: { type: String, required: true, trim: true },
-  description: { type: String, required: true },
-  category: { type: String, default: "" },
-  link: { type: String, default: "" },
-  image: { type: String, default: "" }, // store image path or URL
-  status: { type: String, enum: ["active","inactive"], default: "active" },
-}, { timestamps: true });
+const projectSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    images: [{ type: String, required: true }], // 👈 3 images
+  },
+  { timestamps: true }
+);
 
-const Project = mongoose.model("Project", projectSchema);
-export default Project;
+export default mongoose.model("Project", projectSchema);

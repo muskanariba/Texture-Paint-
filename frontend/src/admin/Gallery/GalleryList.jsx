@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 
-export default function AdminGalleryList() {
+export default function GalleryList() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [colors, setColors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,15 +36,11 @@ export default function AdminGalleryList() {
     <AdminLayout>
       <div className="p-6">
 
-        {/* ⭐ Dashboard-Style Header ⭐ */}
-        <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200">
-
+        <div className="p-6 bg-gray-100 rounded-xl mb-8 border shadow-sm">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-black">Gallery Colors</h1>
-              <p className="text-gray-800 mt-2">
-                Manage all gallery color shades from here.
-              </p>
+              <p className="text-gray-800 mt-2">Manage all gallery colors.</p>
             </div>
 
             <Link
@@ -54,17 +50,13 @@ export default function AdminGalleryList() {
               + Add Color
             </Link>
           </div>
-
         </div>
 
-        {/* Table */}
         <div className="bg-white shadow-md rounded-xl overflow-hidden border">
           {loading ? (
             <div className="p-6 text-gray-600">Loading...</div>
           ) : colors.length === 0 ? (
-            <div className="p-6 text-gray-500 text-center">
-              No colors found. Add a new color.
-            </div>
+            <div className="p-6 text-center text-gray-500">No colors found.</div>
           ) : (
             <table className="w-full">
               <thead>
@@ -78,36 +70,29 @@ export default function AdminGalleryList() {
 
               <tbody>
                 {colors.map((c) => (
-                  <tr
-                    key={c._id}
-                    className="border-b hover:bg-gray-50 transition"
-                  >
+                  <tr key={c._id} className="border-b hover:bg-gray-50 transition">
                     <td className="p-3">{c.name}</td>
                     <td className="p-3">{c.hex}</td>
-
                     <td className="p-3">
                       <div
-                        className="w-10 h-5 rounded border shadow-inner"
+                        className="w-10 h-5 rounded border"
                         style={{ background: c.hex }}
                       ></div>
                     </td>
+                    <td className="p-3 flex gap-3">
+                      <Link
+                        to={`/admin/gallery/edit/${c._id}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </Link>
 
-                    <td className="p-3">
-                      <div className="flex gap-3">
-                        <Link
-                          to={`/admin/gallery/edit/${c._id}`}
-                          className="text-blue-600 font-medium hover:underline"
-                        >
-                          Edit
-                        </Link>
-
-                        <button
-                          onClick={() => deleteColor(c._id)}
-                          className="text-red-600 font-medium hover:underline"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => deleteColor(c._id)}
+                        className="text-red-600 hover:underline"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

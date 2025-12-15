@@ -24,7 +24,7 @@ export default function Sidebar() {
     // ⭐ NEW Projects Section
     { name: "Projects", path: "/admin/projects", icon: BriefcaseIcon, color: "text-indigo-600" },
 
-    { name: "Products", path: "/admin/products", icon: RectangleStackIcon, color: "text-red-500" },
+    { name: "Collections", path: "/admin/collection", icon: RectangleStackIcon, color: "text-red-500" },
     { name: "Services", path: "/admin/services", icon: WrenchScrewdriverIcon, color: "text-yellow-500" },
     { name: "Gallery", path: "/admin/gallery", icon: PhotoIcon, color: "text-blue-500" },
     { name: "Testimonials", path: "/admin/testimonials", icon: UserGroupIcon, color: "text-red-500" },

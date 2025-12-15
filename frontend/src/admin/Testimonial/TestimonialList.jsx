@@ -31,13 +31,13 @@ export default function TestimonialList() {
     <AdminLayout>
       <div className="p-6">
 
-        {/* ⭐ Dashboard-Style Page Header ⭐ */}
+        {/* Page Header */}
         <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-black">Testimonials</h1>
               <p className="text-gray-800 mt-2">
-                Manage customer testimonials, feedback, and ratings from here.
+                Manage customer testimonials and feedback.
               </p>
             </div>
 
@@ -57,7 +57,6 @@ export default function TestimonialList() {
               <tr className="bg-gray-100 text-left">
                 <th className="p-3 border">Name</th>
                 <th className="p-3 border">Message</th>
-                <th className="p-3 border">Rating</th>
                 <th className="p-3 border">Actions</th>
               </tr>
             </thead>
@@ -65,16 +64,15 @@ export default function TestimonialList() {
             <tbody>
               {testimonials.map((t) => (
                 <tr key={t._id} className="hover:bg-gray-50 transition">
-                  <td className="p-3 border font-medium">{t.name}</td>
+
+                  <td className="p-3 border font-medium">
+                    {t.name}
+                  </td>
 
                   <td className="p-3 border text-gray-700">
                     {t.message.length > 80
                       ? t.message.substring(0, 80) + "..."
                       : t.message}
-                  </td>
-
-                  <td className="p-3 border text-yellow-600 font-bold">
-                    {"⭐".repeat(t.rating)}
                   </td>
 
                   <td className="p-3 border">
@@ -94,12 +92,13 @@ export default function TestimonialList() {
                       </button>
                     </div>
                   </td>
+
                 </tr>
               ))}
 
               {testimonials.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="text-center p-5 text-gray-600">
+                  <td colSpan="3" className="text-center p-5 text-gray-600">
                     No testimonials found.
                   </td>
                 </tr>

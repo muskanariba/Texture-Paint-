@@ -5,80 +5,108 @@ import AdminLayout from "../AdminLayout";
 export default function ProjectList() {
   const API_URL = import.meta.env.VITE_API_URL;
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
 
   const load = async () => {
-    try {
-      const res = await fetch(`${API_URL}/projects/all`);
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Failed");
-      setProjects(data.projects);
-      setLoading(false);
-    } catch (e) {
-      setErr(e.message || "Error");
-      setLoading(false);
-    }
+    const res = await fetch(`${API_URL}/projects/all`);
+    const data = await res.json();
+    if (data.success) setProjects(data.projects);
   };
 
-  useEffect(() => { load(); }, []);
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this project?")) return;
-    try {
-      const res = await fetch(`${API_URL}/projects/delete/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message || "Failed");
-      setProjects(prev => prev.filter(p => p._id !== id));
-    } catch (e) {
-      alert(e.message || "Delete failed");
-    }
+  const del = async (id) => {
+    if (!window.confirm("Delete this project?")) return;
+    await fetch(`${API_URL}/projects/delete/${id}`, { method: "DELETE" });
+    load();
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (err) return <div className="text-red-600">{err}</div>;
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
- <AdminLayout>
-       <div className="p-4">
-       <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-black">Projects</h1>
-              <p className="text-gray-800 mt-2">
-                Manage all portfolio projects including images, client name and content.
-              </p>
-            </div>
+    <AdminLayout>
+      <div className="p-6">
 
-            <Link
-              to="/admin/projects/add"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition"
-            >
-              + Add Project
-            </Link>
-          </div>
+        {/* Header */}
+        <div className="flex justify-between mb-6">
+          <h1 className="text-3xl font-bold">Projects</h1>
+          <Link
+            to="/admin/projects/add"
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            + Add Project
+          </Link>
         </div>
 
-      <div className="space-y-4">
-        {projects.length === 0 && <div>No projects yet</div>}
-        {projects.map(p => (
-          <div key={p._id} className="p-3 border rounded flex gap-4">
-            <div style={{width:120}}>
-              {p.image ? <img src={import.meta.env.VITE_API_URL + p.image} alt={p.title} style={{width:"100%",height:80,objectFit:"cover"}} /> : <div className="bg-gray-200 h-20" />}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold">{p.title}</h3>
-              <p className="text-sm text-gray-600">{p.category} • {p.status}</p>
-              <p className="text-sm mt-1">{p.description.slice(0,120)}{p.description.length>120?"...":""}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <Link to={`/admin/projects/edit/${p._id}`} className="px-2 py-1 bg-yellow-500 text-white rounded">Edit</Link>
-              <button onClick={()=>handleDelete(p._id)} className="px-2 py-1 bg-red-600 text-white rounded">Delete</button>
-            </div>
-          </div>
-        ))}
+        {/* Table */}
+        <div className="bg-white border rounded-xl shadow overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="p-4 border">Images</th>
+                <th className="p-4 border">Title</th>
+                <th className="p-4 border">Description</th>
+                <th className="p-4 border text-center">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {projects.map((p) => (
+                <tr key={p._id} className="hover:bg-gray-50">
+                  {/* Images */}
+                  <td className="p-4 border">
+                    <div className="flex gap-2">
+                      {p.images?.map((img, i) => (
+                        <img
+                          key={i}
+                          src={`${API_URL.replace("/api","")}/uploads/${img}`}
+                          className="w-20 h-12 object-cover rounded"
+                        />
+                      ))}
+                    </div>
+                  </td>
+
+                  {/* Title */}
+                  <td className="p-4 border font-medium">{p.title}</td>
+
+                  {/* Description */}
+                  <td className="p-4 border text-sm">
+                    {p.description.length > 60
+                      ? p.description.slice(0, 60) + "..."
+                      : p.description}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="p-4 border">
+                    <div className="flex justify-center gap-2">
+                      <Link
+                        to={`/admin/projects/edit/${p._id}`}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded"
+                      >
+                        Edit
+                      </Link>
+                      <button
+                        onClick={() => del(p._id)}
+                        className="bg-red-600 text-white px-3 py-1 rounded"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {projects.length === 0 && (
+                <tr>
+                  <td colSpan="4" className="text-center p-6 text-gray-600">
+                    No projects found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
       </div>
-    </div>
- </AdminLayout>
+    </AdminLayout>
   );
 }

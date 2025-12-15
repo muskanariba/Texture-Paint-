@@ -1,43 +1,17 @@
 import express from "express";
-import Hero from "../models/Hero.js";
+import {
+  addHero,
+  getAllHero,
+  updateHero,
+  deleteHero
+} from "../controllers/heroController.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
-// Add Hero
-router.post("/add", async (req, res) => {
-  try {
-    const hero = new Hero(req.body);
-    await hero.save();
-    res.json({ success: true, hero });
-  } catch (err) {
-    res.json({ success: false, message: err.message });
-  }
-});
-
-// Get All Hero Sections
-router.get("/all", async (req, res) => {
-  const heroes = await Hero.find().sort({ createdAt: -1 });
-  res.json({ success: true, heroes });
-});
-
-// Get Single Hero
-router.get("/:id", async (req, res) => {
-  const hero = await Hero.findById(req.params.id);
-  res.json({ success: true, hero });
-});
-
-// Update Hero
-router.put("/update/:id", async (req, res) => {
-  const hero = await Hero.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  res.json({ success: true, hero });
-});
-
-// Delete Hero
-router.delete("/delete/:id", async (req, res) => {
-  await Hero.findByIdAndDelete(req.params.id);
-  res.json({ success: true });
-});
+router.post("/add", upload.single("bgImage"), addHero);
+router.get("/all", getAllHero);
+router.put("/update/:id", upload.single("bgImage"), updateHero);
+router.delete("/delete/:id", deleteHero);
 
 export default router;

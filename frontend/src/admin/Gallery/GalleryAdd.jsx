@@ -1,65 +1,69 @@
-import { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AdminLayout from "../AdminLayout";
 
-export default function Gallery() {
+export default function GalleryAdd() {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [colors, setColors] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState("");
+  const [hex, setHex] = useState("");
+  const navigate = useNavigate();
 
-  const location = useLocation(); // to detect refresh trigger
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const fetchColors = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/gallery/add`);
-      if (!res.ok) throw new Error("Failed to fetch colors");
-      const data = await res.json();
-      setColors(data);
-      setLoading(false);
-    } catch (err) {
-      console.error("Error fetching colors:", err);
-      setLoading(false);
-    }
+    const res = await fetch(`${API_URL}/gallery`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, hex }),
+    });
+
+    const data = await res.json();
+    if (data.success) navigate("/admin/gallery");
   };
 
-  // Fetch on mount and whenever location.state?.refresh changes
-  useEffect(() => {
-    fetchColors();
-  }, [location.state?.refresh]);
-
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Gallery Colors</h1>
-        <Link
-          to="/admin/gallery/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
-        >
-          Add New Color
-        </Link>
-      </div>
+    <AdminLayout>
+      <div className="p-6 max-w-xl mx-auto">
 
-      {loading ? (
-        <p>Loading colors...</p>
-      ) : colors.length === 0 ? (
-        <p>No colors found.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {colors.map((color) => (
-            <div
-              key={color._id || color.id} // use _id from MongoDB
-              className="border rounded-lg p-4 flex flex-col items-center"
-            >
-              <div
-                className="w-full h-24 rounded mb-2"
-                style={{ backgroundColor: color.hex }}
-              ></div>
-              <p className="font-medium text-gray-800">{color.name}</p>
-              <p className="text-gray-500">{color.hex}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Add New Color</h1>
+
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-6 rounded-xl shadow-md border grid gap-5"
+        >
+          <div>
+            <label className="block text-gray-700 mb-1">Color Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+              placeholder="Royal Gold"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 mb-1">Hex Code</label>
+            <input
+              type="text"
+              required
+              value={hex}
+              onChange={(e) => setHex(e.target.value)}
+              className="w-full p-2 border rounded-lg"
+              placeholder="#FFD700"
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Save Color
+          </button>
+        </form>
+
+      </div>
+    </AdminLayout>
   );
 }

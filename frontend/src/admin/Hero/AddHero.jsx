@@ -3,86 +3,171 @@ import { useNavigate } from "react-router-dom";
 import AdminLayout from "../AdminLayout";
 
 export default function AddHero() {
-  const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
+  const API_URL = import.meta.env.VITE_API_URL;
 
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
+  const [form, setForm] = useState({
+    title: "",
+    subtitle: "",
+    description: "",
+    primaryBtnText: "",
+    primaryBtnLink: "",
+    secondaryBtnText: "",
+    secondaryBtnLink: "",
+  });
+
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const submitHandler = async (e) => {
+  const handle = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const submit = async (e) => {
     e.preventDefault();
+    if (!image) return alert("Background image is required");
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("subtitle", subtitle);
-    if (image) formData.append("image", image);
+    setLoading(true);
+
+    const fd = new FormData();
+    Object.keys(form).forEach((key) => fd.append(key, form[key]));
+    fd.append("bgImage", image);
 
     const res = await fetch(`${API_URL}/hero/add`, {
       method: "POST",
-      body: formData,
+      body: fd,
     });
 
     const data = await res.json();
+    setLoading(false);
+
     if (data.success) {
-      alert("Hero added successfully!");
+      alert("Hero section added successfully");
       navigate("/admin/hero");
     }
   };
 
   return (
     <AdminLayout>
-      <div className="p-6 flex ">
+      <div className="p-6 flex justify-center">
+        <div className="bg-white p-8 rounded-xl shadow-lg border w-full max-w-3xl">
 
-        <div className="bg-white p-8 rounded-xl shadow-lg border w-full max-w-xl">
+          {/* Heading */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">
+              Add Hero Section
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Manage homepage hero content & background image.
+            </p>
+          </div>
 
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">Add Hero Section</h1>
-
-          <form onSubmit={submitHandler} className="space-y-5">
+          {/* Form */}
+          <form className="space-y-6" onSubmit={submit}>
 
             {/* Title */}
             <div>
-              <label className="block font-medium mb-1 text-gray-800">Title</label>
+              <label className="block font-medium mb-1">Title</label>
               <input
-                type="text"
-                className="border p-3 rounded w-full focus:ring-2 focus:ring-blue-500"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                name="title"
+                placeholder="Main heading text"
+                className="border p-3 w-full rounded focus:ring-2 focus:ring-blue-500"
+                onChange={handle}
                 required
               />
             </div>
 
-            {/* Subtitle */}
+           
+
+            {/* Description */}
             <div>
-              <label className="block font-medium mb-1 text-gray-800">Subtitle</label>
+              <label className="block font-medium mb-1">Description</label>
               <textarea
-                className="border p-3 rounded w-full focus:ring-2 focus:ring-blue-500"
-                rows="3"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
-                required
-              />
+                name="description"
+                rows="4"
+                placeholder="Hero description text"
+                className="border p-3 w-full rounded focus:ring-2 focus:ring-blue-500"
+                onChange={handle}
+              ></textarea>
             </div>
 
-            {/* Hero Image */}
+            {/* Buttons */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block font-medium mb-1">
+                  Primary Button Text
+                </label>
+                <input
+                  name="primaryBtnText"
+                  placeholder="e.g. Get Started"
+                  className="border p-3 w-full rounded"
+                  onChange={handle}
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium mb-1">
+                  Primary Button Link
+                </label>
+                <input
+                  name="primaryBtnLink"
+                  placeholder="/contact"
+                  className="border p-3 w-full rounded"
+                  onChange={handle}
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium mb-1">
+                  Secondary Button Text
+                </label>
+                <input
+                  name="secondaryBtnText"
+                  placeholder="e.g. View Work"
+                  className="border p-3 w-full rounded"
+                  onChange={handle}
+                />
+              </div>
+
+              <div>
+                <label className="block font-medium mb-1">
+                  Secondary Button Link
+                </label>
+                <input
+                  name="secondaryBtnLink"
+                  placeholder="/portfolio"
+                  className="border p-3 w-full rounded"
+                  onChange={handle}
+                />
+              </div>
+            </div>
+
+            {/* Background Image */}
             <div>
-              <label className="block font-medium mb-1 text-gray-800">Hero Image</label>
+              <label className="block font-medium mb-1">
+                Hero Background Image
+              </label>
               <input
                 type="file"
                 accept="image/*"
-                className="border p-3 rounded w-full bg-gray-50 cursor-pointer"
+                className="border p-3 w-full rounded focus:ring-2 focus:ring-blue-500"
                 onChange={(e) => setImage(e.target.files[0])}
+                required
               />
+              <p className="text-sm text-gray-600 mt-1">
+                Recommended size: 1920×900
+              </p>
             </div>
 
+            {/* Submit */}
             <button
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg w-full hover:bg-blue-700 transition"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg text-white font-medium transition
+                ${loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"}`}
             >
-              Add Hero
+              {loading ? "Saving..." : "Add Hero Section"}
             </button>
 
           </form>
-
         </div>
       </div>
     </AdminLayout>

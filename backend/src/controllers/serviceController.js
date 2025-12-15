@@ -1,55 +1,29 @@
 import Service from "../models/Service.js";
 
-// ADD SERVICE
+// ADD
 export const addService = async (req, res) => {
-  try {
-    const { title, description, icon } = req.body;
-
-    console.log("REQ BODY:", req.body);   // <-- ADD THIS
-
-    const newService = new Service({ title, description, icon });
-    await newService.save();
-
-    res.json({ success: true, message: "Service added", service: newService });
-  } catch (err) {
-    console.error("SERVICE ERROR:", err);   // <-- ADD THIS
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+  const service = await Service.create(req.body);
+  res.json({ success: true, service });
 };
 
-
-// GET ALL
+// ALL
 export const getServices = async (req, res) => {
-  try {
-    const services = await Service.find().sort({ createdAt: -1 });
-    res.json({ success: true, services });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+  const services = await Service.find().sort({ createdAt: -1 });
+  res.json({ success: true, services });
 };
 
 // UPDATE
 export const updateService = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { title, description, icon } = req.body;
-
-    await Service.findByIdAndUpdate(id, { title, description, icon });
-
-    res.json({ success: true, message: "Service updated" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+  const service = await Service.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json({ success: true, service });
 };
 
 // DELETE
 export const deleteService = async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Service.findByIdAndDelete(id);
-
-    res.json({ success: true, message: "Service deleted" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
-  }
+  await Service.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
 };

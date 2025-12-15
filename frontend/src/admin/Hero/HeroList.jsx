@@ -4,113 +4,120 @@ import AdminLayout from "../AdminLayout";
 
 export default function HeroList() {
   const API_URL = import.meta.env.VITE_API_URL;
-  const [heroes, setHeroes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
 
-  const loadHeroes = async () => {
-    try {
-      const res = await fetch(`${API_URL}/hero/all`);
-      const data = await res.json();
-
-      if (data.success) {
-        // API usually: heroes or hero → handle both
-        setHeroes(data.heroes || data.hero || []);
-      }
-    } catch (err) {
-      console.error(err);
-      setHeroes([]); // safe fallback
-    }
-    setLoading(false);
+  const load = async () => {
+    const res = await fetch(`${API_URL}/hero/all`);
+    const json = await res.json();
+    if (json.success) setData(json.hero);
   };
 
-  const deleteHero = async (id) => {
-    if (!confirm("Delete this hero section?")) return;
-
-    const res = await fetch(`${API_URL}/hero/delete/${id}`, {
-      method: "DELETE",
-    });
-    const data = await res.json();
-
-    if (data.success) loadHeroes();
+  const del = async (id) => {
+    if (!window.confirm("Delete this Hero section?")) return;
+    await fetch(`${API_URL}/hero/delete/${id}`, { method: "DELETE" });
+    load();
   };
 
   useEffect(() => {
-    loadHeroes();
+    load();
   }, []);
 
   return (
     <AdminLayout>
       <div className="p-6">
 
-        {/* Page Header */}
-        <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-black">Hero Section</h1>
-            <p className="text-gray-800 mt-2">
-              Manage homepage hero banners from here.
-            </p>
-          </div>
+        {/* 🔹 Header */}
+        <div className="p-6 bg-gradient-to-r from-gray-100 to-white rounded-xl mb-8 shadow-sm border border-gray-200">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-black">Hero Section</h1>
+              <p className="text-gray-700 mt-2">
+                Manage homepage hero content & background images.
+              </p>
+            </div>
 
-          <Link
-            to="/admin/hero/add"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition"
-          >
-            + Add Hero
-          </Link>
+            <Link
+              to="/admin/hero/add"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow transition"
+            >
+              + Add Hero
+            </Link>
+          </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white border rounded-xl shadow overflow-x-auto">
-          {loading ? (
-            <p className="p-5 text-gray-500 text-center">Loading...</p>
-          ) : heroes.length === 0 ? (
-            <p className="p-5 text-gray-500 text-center">No hero sections added.</p>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-3 border">Title</th>
-                  <th className="p-3 border">Subtitle</th>
-                  <th className="p-3 border">Background</th>
-                  <th className="p-3 border">Actions</th>
+        {/* 🔹 Table */}
+        <div className="overflow-x-auto bg-white border rounded-xl shadow">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-100 text-left">
+                <th className="p-4 border">Background</th>
+                <th className="p-4 border">Title</th>
+                <th className="p-4 border">Description</th>
+                <th className="p-4 border text-center">Actions</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {data.map((h) => (
+                <tr
+                  key={h._id}
+                  className="hover:bg-gray-50 transition"
+                >
+                  {/* Image */}
+                  <td className="p-4 border">
+                    <img
+                      src={`${API_URL.replace("/api", "")}/uploads/${h.bgImage}`}
+                      alt="Hero"
+                      className="w-28 h-16 object-cover rounded-lg shadow-sm"
+                    />
+                  </td>
+
+                  {/* Title */}
+                  <td className="p-4 border font-medium text-gray-800">
+                    {h.title}
+                  </td>
+
+                  {/* Description (trimmed) */}
+                  <td className="p-4 border text-gray-700 text-sm max-w-md">
+                    {h.description?.length > 100
+                      ? h.description.substring(0, 100) + "..."
+                      : h.description || "—"}
+                  </td>
+
+                  {/* Actions */}
+                  <td className="p-4 border">
+                    <div className="flex justify-center gap-3">
+                      <Link
+                        to={`/admin/hero/edit/${h._id}`}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-1.5 rounded-lg transition"
+                      >
+                        Edit
+                      </Link>
+
+                      <button
+                        onClick={() => del(h._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg transition"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {heroes.map((h) => (
-                  <tr key={h._id} className="hover:bg-gray-50">
-                    <td className="p-3 border">{h.title}</td>
-                    <td className="p-3 border">{h.subtitle}</td>
+              ))}
 
-                    <td className="p-3 border">
-                      <img
-                        src={h.backgroundImage}
-                        alt=""
-                        className="w-24 h-14 object-cover rounded border"
-                      />
-                    </td>
-
-                    <td className="p-3 border">
-                      <div className="flex gap-2">
-                        <Link
-                          to={`/admin/hero/edit/${h._id}`}
-                          className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                        >
-                          Edit
-                        </Link>
-
-                        <button
-                          onClick={() => deleteHero(h._id)}
-                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+              {/* Empty State */}
+              {data.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="text-center p-6 text-gray-600"
+                  >
+                    No Hero sections found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
       </div>

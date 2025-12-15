@@ -1,50 +1,101 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 export default function About() {
-  return (
-    <section id="about" className="w-full bg-gray-50 py-10">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col items-center gap-16">
+  const API_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-        {/* Section Heading */}
-        <h2 className="md:text-4xl font-extrabold text-center text-gray-800">
+  const [about, setAbout] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
+
+  // Normalize image path
+  const buildImageUrl = (image) => {
+    if (!image) return "";
+    let cleanImage = image.replace(/^\/+/, "");
+    if (cleanImage.startsWith("uploads/")) {
+      cleanImage = cleanImage.replace("uploads/", "");
+    }
+    return `${BASE_URL}/uploads/${cleanImage}`;
+  };
+
+  const loadAbout = async () => {
+    try {
+      const res = await fetch(`${API_URL}/about/all`, { cache: "no-store" });
+      const data = await res.json();
+      if (data.success && data.about.length > 0) {
+        const record = data.about[0];
+        setAbout(record);
+        setImageUrl(buildImageUrl(record.image));
+      }
+    } catch (err) {
+      console.error("Error fetching About:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadAbout();
+  }, []);
+
+  return (
+    <section
+      id="about"
+      className="w-full min-h-screen bg-gray-50 flex items-center py-10"
+    >
+      <div className="w-full max-w-7xl mx-auto px-6">
+
+        {/* Heading */}
+        <h2 className="md:text-4xl font-extrabold text-center text-gray-800 mb-10">
           <span className="text-yellow-500">About</span> <br />
-          <span className="text-red-500">Premium</span> & <span className="text-blue-500">Look Texture</span>
+          <span className="text-red-500">Premium</span>{" "}
+          <span className="text-gray-800">&</span>{" "}
+          <span className="text-blue-500">Look Texture</span>
         </h2>
 
-        <div className="flex flex-col md:flex-row items-stretch gap-12 w-full">
+        <div className="flex flex-col lg:flex-row items-center gap-16 w-full">
 
-          {/* Left Image */}
-          <div className="w-full md:w-1/2">
+          {/* IMAGE */}
+          <div className="w-full lg:w-1/2">
             <img
-              src="https://i.pinimg.com/736x/6c/35/c2/6c35c2c8d025f094ae5ef49818e50ec2.jpg"
-              alt="About Premium Look Texture"
-              className="rounded-xl shadow-2xl w-full max-h-[500px] object-cover hover:scale-105 transition-transform duration-500"
+              src={
+                imageUrl
+                  ? imageUrl
+                  : "https://placehold.co/800x600?text=Loading..."
+              }
+              alt="About"
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://placehold.co/800x600?text=Image+Not+Found";
+              }}
+              className="w-full h-[420px] md:h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl"
             />
           </div>
 
-          {/* Right Text Card */}
+          {/* CONTENT */}
           <motion.div
-            whileHover={{ scale: 1.02 }}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="w-full md:w-1/2 bg-white rounded-2xl shadow-xl p-6 md:p-8 text-gray-700 border-t-4 border-yellow-500 hover:shadow-2xl transition-shadow duration-300 flex flex-col justify-center max-h-[500px] "
+            className="w-full lg:w-1/2 bg-white rounded-3xl shadow-xl p-8 md:p-10 border-t-4 border-yellow-500"
           >
-            <p className="text-lg mb-4">
-              At <span className="font-bold text-yellow-500">Premium Look Texture</span>, we transform ordinary walls into stunning statements with our high-quality paints and finishes. Every project is crafted to reflect elegance and durability.
-            </p>
-            <p className="text-lg mb-4">
-              Our team of experts specializes in turning <span className="font-bold text-red-500">plain walls</span> into vibrant, inviting spaces that tell your story and match your vision. From color consultation to final finish, we ensure perfection at every step.
-            </p>
-            <p className="text-lg mb-4">
-              We have collaborated with top brands and designers, ensuring every project is handled with <span className="font-bold text-blue-500">precision</span>, <span className="font-bold text-red-500">care</span>, and <span className="font-bold text-yellow-500">passion</span>.
-            </p>
-            <p className="text-lg mb-4">
-              Our premium paints are not just colors—they are a combination of <span className="font-bold text-blue-500">technology</span>, <span className="font-bold text-red-500">quality pigments</span>, and <span className="font-bold text-yellow-500">innovative techniques</span> that ensure longevity, vibrancy, and smooth finishes.
-            </p>
-           
+            {about ? (
+              <>
+                <h3 className="text-3xl font-bold mb-4 text-gray-900">
+                  {about.title}
+                </h3>
+
+                <h4 className="text-lg font-semibold text-gray-600 mb-6">
+                  {about.subtitle}
+                </h4>
+
+                <p className="text-lg leading-relaxed text-gray-700 whitespace-pre-line">
+                  {about.description}
+                </p>
+              </>
+            ) : (
+              <p>Loading About...</p>
+            )}
           </motion.div>
+
         </div>
       </div>
     </section>

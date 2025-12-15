@@ -85,21 +85,7 @@ export default function EditTestimonial() {
               />
             </div>
 
-            {/* Rating */}
-            <div>
-              <label className="block font-medium text-gray-700 mb-1">
-                Rating (1–5)
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="5"
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                value={rating}
-                onChange={(e) => setRating(e.target.value)}
-                required
-              />
-            </div>
+        
 
             {/* Update Button */}
             <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition">
