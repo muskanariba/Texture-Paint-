@@ -28,7 +28,7 @@ export default function Footer() {
           </h2>
 
           <p className="text-gray-700 text-base leading-relaxed max-w-lg">
-            We don’t just paint walls — we craft
+            We don’t just paint walls, we craft
             <span className="text-blue-600 font-semibold"> premium experiences</span>{" "}
             through
             <span className="text-red-500 font-semibold"> quality coatings</span>{" "}

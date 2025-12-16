@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import servicespagebg from "../assets/services-page-bg.jpg"
 import {
   FaBrush,
   FaBuilding,
@@ -45,17 +46,17 @@ export default function Services() {
   }, []);
 
   return (
-    <section
-      id="services"
-      className="w-full py-10 relative overflow-hidden"
-      style={{
-        backgroundImage:
-          "url('https://i.pinimg.com/1200x/ee/c1/5d/eec15d2491cbe66707b9222932811b94.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-      }}
-    >
+   <section
+  id="services"
+  className="w-full py-10 relative overflow-hidden"
+  style={{
+    backgroundImage: `url(${servicespagebg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat"
+  }}
+>
+
       <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-16 bg-white/60 backdrop-blur-md rounded-2xl py-10">
 
         {/* Heading */}

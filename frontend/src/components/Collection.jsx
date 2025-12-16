@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import collectionBg from "../assets/collection-page-bg.jpg";
+
 import {
   FaHome,
   FaSun,
@@ -32,17 +34,17 @@ export default function Collection() {
   }, []);
 
   return (
-    <section
-      id="collection"
-      className="w-full py-10 relative overflow-hidden"
-      style={{
-        backgroundImage:
-          "url('https://i.pinimg.com/736x/66/84/7a/66847acedff509bf3b1d457eb39efaf9.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
-      }}
-    >
+   <section
+  id="collection"
+  className="w-full py-10 relative overflow-hidden"
+  style={{
+    backgroundImage: `url(${collectionBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat"
+  }}
+>
+
       <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-16 bg-white/60 backdrop-blur-md rounded-2xl py-10">
 
         {/* Heading (STATIC) */}

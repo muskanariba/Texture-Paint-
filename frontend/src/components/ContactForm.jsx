@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import paintRoller from "../assets/paint-roller.jpg";
 
 export default function ContactForm() {
   const [result, setResult] = useState("");
@@ -31,11 +32,12 @@ export default function ContactForm() {
 
       {/* Roller Image */}
       <div className="absolute right-[-60px] md:right-[-110px] top-1/2 -translate-y-1/2 rotate-6 pointer-events-none opacity-90">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBw0cMuSZmxG1QG1UceUHbPi4CUWQWcr7kXQ&s"
-          className="w-[250px] md:w-[400px] drop-shadow-[0_30px_45px_rgba(0,0,0,0.25)]"
-          alt="Paint Roller"
-        />
+      <img
+  src={paintRoller}
+  className="w-[250px] md:w-[400px] drop-shadow-[0_30px_45px_rgba(0,0,0,0.25)]"
+  alt="Paint Roller"
+/>
+
       </div>
 
       {/* Center Wrapper */}
